@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Plataforma Educativa Animal</title>
+  <link rel="stylesheet" href="login.css">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="login-container">
+  <h1>🐾 Iniciar sesión</h1>
+
+  <input type="email" id="email" placeholder="Correo electrónico">
+  <input type="password" id="password" placeholder="Contraseña">
+
+  <button id="loginBtn">Iniciar sesión</button>
+
+  <p class="small">
+    ¿No tienes cuenta?
+    <span style="cursor:pointer; color:blue;" onclick="window.location.href='register.html'">
+      Crear cuenta
+    </span>
+  </p>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_uFXTPAOuMqY8cG4-nMHsokNAY4V9dYI",
+    authDomain: "mi-primer-proyecto-3762d.firebaseapp.com",
+    projectId: "mi-primer-proyecto-3762d",
+    storageBucket: "mi-primer-proyecto-3762d.firebasestorage.app",
+    messagingSenderId: "221249466153",
+    appId: "1:221249466153:web:2f987be3885a11c4c65138"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const loginBtn = document.getElementById("loginBtn");
+
+  loginBtn.addEventListener("click", async () => {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Por favor completa todos los campos'
+      });
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      // MENSAJE PROFESIONAL (SIN ALERT DEL NAVEGADOR)
+      await Swal.fire({
+        title: 'Bienvenido',
+        text: 'Bienvenido a nuestra plataforma donde cuidamos y educamos sobre el bienestar animal',
+        icon: 'success',
+        confirmButtonText: 'Continuar'
+      });
+
+      // Redirección DESPUÉS de cerrar el mensaje
+      window.location.href = "index.html";
+
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: 'Correo o contraseña incorrectos'
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

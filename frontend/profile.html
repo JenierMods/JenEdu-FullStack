@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi perfil | JenEdu</title>
+  <link rel="stylesheet" href="profile.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">JenEdu</div>
+  <a href="index.html" class="back-btn">← Volver</a>
+</header>
+
+<main class="profile-container">
+  <div class="profile-card">
+
+    <div class="avatar" id="avatar">U</div>
+
+    <h2 id="userEmail">usuario@email.com</h2>
+    <p class="role">Usuario registrado</p>
+
+    <!-- INFO PRINCIPAL -->
+    <div class="info-grid">
+      <div class="info-box">
+        <span>Cursos Gratis</span>
+        <strong id="freeCount">0</strong>
+      </div>
+
+      <div class="info-box">
+        <span>Cursos Premium</span>
+        <strong id="premiumCount">0</strong>
+      </div>
+
+      <div class="info-box">
+        <span>Plan activo</span>
+        <strong id="plan">Gratis</strong>
+      </div>
+
+      <div class="info-box">
+        <span>Email verificado</span>
+        <strong id="verified">—</strong>
+      </div>
+
+      <div class="info-box">
+        <span>Miembro desde</span>
+        <strong id="createdAt">—</strong>
+      </div>
+    </div>
+
+
+
+    <!-- LISTA DE CURSOS VISTOS -->
+    <div class="courses-viewed">
+      <h3>Cursos visitados</h3>
+      <ul id="coursesList"></ul>
+    </div>
+
+    <!-- ============================
+     🧑‍⚕️ ASESORÍA PREMIUM
+============================= -->
+<div id="asesoriaPremium" class="premium-help" style="display:none;">
+  <h3>Asesoría Profesional Premium</h3>
+
+  <p class="premium-desc">
+    Como usuario <strong>Premium</strong>, puedes consultar directamente con
+    nuestro equipo de profesionales sobre manejo, sanidad y producción animal.
+  </p>
+
+  <textarea
+    id="consultaInput"
+    placeholder="Escribe tu consulta aquí..."
+  ></textarea>
+
+  <button id="enviarConsultaBtn" class="btn-premium">
+    Enviar consulta
+  </button>
+
+  <h4 style="margin-top:25px;">Tus consultas</h4>
+  <ul id="listaConsultas"></ul>
+</div>
+
+    <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { 
+  getFirestore, collection, getDocs, query, where, 
+  doc, getDoc, setDoc, updateDoc, arrayUnion, deleteDoc 
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_uFXTPAOuMqY8cG4-nMHsokNAY4V9dYI",
+    authDomain: "mi-primer-proyecto-3762d.firebaseapp.com",
+    projectId: "mi-primer-proyecto-3762d",
+    storageBucket: "mi-primer-proyecto-3762d.firebasestorage.app",
+    messagingSenderId: "221249466153",
+    appId: "1:221249466153:web:2f987be3885a11c4c65138"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const asesoriaPremium = document.getElementById("asesoriaPremium");
+  const consultaInput = document.getElementById("consultaInput");
+  const enviarConsultaBtn = document.getElementById("enviarConsultaBtn");
+  const listaConsultas = document.getElementById("listaConsultas");
+  const avatar = document.getElementById("avatar");
+  const userEmail = document.getElementById("userEmail");
+  const createdAt = document.getElementById("createdAt");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const verified = document.getElementById("verified");
+  const plan = document.getElementById("plan");
+  const freeCount = document.getElementById("freeCount");
+  const premiumCount = document.getElementById("premiumCount");
+  const coursesList = document.getElementById("coursesList");
+
+  const cursos = [
+    { nombre: "Caprinos", tipo: "free" },
+    { nombre: "Gatos", tipo: "free" },
+    { nombre: "Bovinos", tipo: "premium" },
+    { nombre: "Gallinas", tipo: "premium" },
+    { nombre: "Perros", tipo: "premium" },
+    { nombre: "Conejos", tipo: "premium" },
+    { nombre: "Porcinos", tipo: "premium" },
+    { nombre: "Equinos", tipo: "premium" }
+  ];
+
+  async function obtenerCursosVistos(uid) {
+    const ref = doc(db, "usuarios", uid);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      await setDoc(ref, { cursos_vistos: [] });
+      return [];
+    }
+
+    return snap.data().cursos_vistos || [];
+  }
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // 🔁 Refrescar datos
+  await user.reload();
+
+  // 📧 Datos básicos
+  userEmail.textContent = user.email;
+  avatar.textContent = user.email.charAt(0).toUpperCase();
+  createdAt.textContent = new Date(user.metadata.creationTime).toLocaleDateString();
+  verified.textContent = user.emailVerified ? "Sí " : "No ";
+
+  // ⭐ OBTENER PLAN
+  const datosUsuario = await obtenerPlanUsuario(user.uid);
+
+  if (datosUsuario.suscripcion_activa) {
+    plan.textContent = "Premium";
+    asesoriaPremium.style.display = "block";
+    cargarConsultas(user.uid);
+  } else {
+    plan.textContent = "Gratis";
+    asesoriaPremium.style.display = "none";
+  }
+
+  // 📊 Contadores
+  freeCount.textContent = cursos.filter(c => c.tipo === "free").length;
+  premiumCount.textContent = cursos.filter(c => c.tipo === "premium").length;
+
+  // 📘 Cursos vistos
+  const vistos = await obtenerCursosVistos(user.uid);
+  coursesList.innerHTML = vistos.length
+    ? vistos.map(c => `<li>${c}</li>`).join("")
+    : "<li>Aún no has visitado cursos</li>";
+});
+
+
+  logoutBtn.addEventListener("click", () => {
+    signOut(auth).then(() => window.location.href = "login.html");
+  });
+
+  async function obtenerPlanUsuario(uid) {
+  const ref = doc(db, "usuarios", uid);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    return { plan: "Gratis", suscripcion_activa: false };
+  }
+
+  return snap.data();
+}
+
+enviarConsultaBtn.addEventListener("click", async () => {
+  const mensaje = consultaInput.value.trim();
+  const user = auth.currentUser;
+
+  if (!mensaje) {
+    Swal.fire({
+      icon: "warning",
+      title: "Consulta vacía",
+      text: "Escribe tu consulta antes de enviarla"
+    });
+    return;
+  }
+
+  try {
+    await setDoc(doc(db, "consultas", crypto.randomUUID()), {
+      uid: user.uid,
+      email: user.email,
+      mensaje,
+      estado: "pendiente",
+      respuesta: "",
+      fecha: new Date()
+    });
+
+    consultaInput.value = "";
+
+    Swal.fire({
+      icon: "success",
+      title: "Consulta enviada",
+      text: "Nuestro equipo la revisará y te responderá pronto",
+      timer: 2500,
+      showConfirmButton: false
+    });
+
+    cargarConsultas(user.uid);
+
+  } catch (error) {
+    console.error("Error enviando consulta:", error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se pudo enviar tu consulta. Intenta nuevamente."
+    });
+  }
+});
+
+
+async function cargarConsultas(uid) {
+  listaConsultas.innerHTML = "";
+
+  const q = query(
+    collection(db, "consultas"),
+    where("uid", "==", uid)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    listaConsultas.innerHTML = "<li>Aún no has enviado consultas</li>";
+    return;
+  }
+
+  snap.forEach(docSnap => {
+    const c = docSnap.data();
+    const consultaId = docSnap.id;
+
+    listaConsultas.innerHTML += `
+      <li class="consulta-item">
+        <strong>Estado:</strong> ${c.estado === "pendiente" ? "Pendiente" : "Respondida"}<br><br>
+
+        <strong>Tu consulta:</strong><br>
+        ${c.mensaje}<br><br>
+
+        ${
+          c.estado === "ya" && c.respuesta
+            ? `<strong>Respuesta del equipo:</strong><br>${c.respuesta}<br><br>`
+            : `<em>Aún no ha sido respondida</em><br><br>`
+        }
+
+        <button class="btn-borrar" data-id="${consultaId}">Borrar consulta</button>
+      </li>
+    `;
+  });
+
+  // Event listener para los botones borrar
+  document.querySelectorAll(".btn-borrar").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.getAttribute("data-id");
+
+      // Confirmación antes de borrar
+      const result = await Swal.fire({
+        title: '¿Eliminar esta consulta?',
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, borrar',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (result.isConfirmed) {
+        try {
+          await deleteDoc(doc(db, "consultas", id));
+          Swal.fire({
+            icon: "success",
+            title: "Consulta eliminada",
+            timer: 2000,
+            showConfirmButton: false
+          });
+          cargarConsultas(uid); // Recargar lista
+        } catch (error) {
+          console.error("Error eliminando consulta:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.message
+          });
+        }
+      }
+    });
+  });
+}
+
+</script>
+
+</body>
+</html>
+
+
+

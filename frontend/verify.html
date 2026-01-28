@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verificación | Plataforma Educativa</title>
+  <link rel="stylesheet" href="login.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="login-container">
+  <h1>🐾 Verificar cuenta</h1>
+  <p>Introduce el código que te enviamos al correo</p>
+
+  <input type="email" id="email" placeholder="Correo electrónico">
+  <input type="text" id="code" placeholder="Código de verificación">
+
+  <button onclick="verifyCode()">Verificar</button>
+
+  <button id="resendBtn" class="secondary-btn" onclick="resendCode()">
+    Reenviar código
+  </button>
+
+  <p class="small" id="resendMsg"></p>
+</div>
+
+<script>
+/* =========================
+   VERIFICAR CÓDIGO
+========================= */
+async function verifyCode() {
+  const email = document.getElementById("email").value.trim();
+  const code = document.getElementById("code").value.trim();
+
+  if (!email || !code) {
+    Swal.fire({
+      icon: "warning",
+      title: "Campos obligatorios",
+      text: "Por favor completa el correo y el código de verificación"
+    });
+    return;
+  }
+
+  try {
+    const res = await fetch("/verificar-codigo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, codigo: code })
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Cuenta activada",
+        text: "Tu cuenta ha sido verificada correctamente",
+        confirmButtonText: "Iniciar sesión"
+      }).then(() => {
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Código incorrecto",
+        text: data.error || "El código ingresado no es válido"
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    Swal.fire({
+      icon: "error",
+      title: "Error del servidor",
+      text: "No se pudo conectar con el servidor"
+    });
+  }
+}
+
+/* =========================
+   REENVIAR CÓDIGO
+========================= */
+async function resendCode() {
+  const email = document.getElementById("email").value.trim();
+  const resendBtn = document.getElementById("resendBtn");
+  const resendMsg = document.getElementById("resendMsg");
+
+  if (!email) {
+    Swal.fire({
+      icon: "warning",
+      title: "Correo requerido",
+      text: "Ingresa tu correo para reenviar el código"
+    });
+    return;
+  }
+
+  resendBtn.disabled = true;
+  resendMsg.textContent = "⏳ Reenviando código...";
+
+  try {
+    const res = await fetch("/reenviar-codigo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Código reenviado",
+        text: "Hemos enviado un nuevo código a tu correo"
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: data.error || "No se pudo reenviar el código"
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    Swal.fire({
+      icon: "error",
+      title: "Error del servidor",
+      text: "No se pudo conectar con el servidor"
+    });
+  }
+
+  setTimeout(() => {
+    resendBtn.disabled = false;
+    resendMsg.textContent = "";
+  }, 30000);
+}
+
+/* =========================
+   AUTOCOMPLETAR EMAIL
+========================= */
+window.addEventListener("DOMContentLoaded", () => {
+  const storedEmail = localStorage.getItem("email");
+  if (storedEmail) {
+    document.getElementById("email").value = storedEmail;
+  }
+});
+</script>
+
+</body>
+</html>

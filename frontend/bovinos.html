@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Bovinos | JenEdu</title>
+  <link rel="stylesheet" href="bovinos.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<!-- 🔒 CONTENIDO PREMIUM -->
+<div id="protectedContent" style="display:none;">
+
+  <header class="topbar">
+    <h1>🐄 Manejo profesional de bovinos</h1>
+    <span>Contenido Premium</span>
+  </header>
+
+  <main class="container">
+
+    <!-- INTRO -->
+    <section class="intro">
+      <h2>Producción, sanidad y bienestar bovino</h2>
+      <p>Guía completa de producción, salud y bienestar Bovina
+      </p>
+      <div class="badge">Premium</div>
+    </section>
+
+    <!-- MÓDULOS DETALLADOS -->
+    <section class="content">
+      <h2>Módulos disponibles</h2>
+
+      <div class="modules">
+        <div class="module" id="modAlimentacion">
+          <h3>Alimentación</h3>
+          <p>Forrajes, suplementación y errores frecuentes.</p>
+          <span class="lock">Premium</span>
+        </div>
+
+        <div class="module" id="modSanidad">
+          <h3>Sanidad</h3>
+          <p>Vacunación, desparasitación y prevención.</p>
+          <span class="lock">Premium</span>
+        </div>
+
+        <div class="module" id="modReproduccion">
+          <h3>Reproducción</h3>
+          <p>Manejo reproductivo y parto.</p>
+          <span class="lock">Premium</span>
+        </div>
+
+        <div class="module" id="modBienestar">
+          <h3>Bienestar</h3>
+          <p>Manejo ético y reducción del estrés.</p>
+          <span class="lock">Premium</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- 🔐 PROTECCIÓN DE ACCESO Y REGISTRO DE CURSO -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_uFXTPAOuMqY8cG4-nMHsokNAY4V9dYI",
+    authDomain: "mi-primer-proyecto-3762d.firebaseapp.com",
+    projectId: "mi-primer-proyecto-3762d",
+    storageBucket: "mi-primer-proyecto-3762d.firebasestorage.app",
+    messagingSenderId: "221249466153",
+    appId: "1:221249466153:web:2f987be3885a11c4c65138"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const content = document.getElementById("protectedContent");
+
+  // 🔹 Función para guardar curso visto en Firestore
+  async function guardarCursoVistoUsuario(userId, curso) {
+    const userRef = doc(db, "usuarios", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      await updateDoc(userRef, { cursos_vistos: arrayUnion(curso) });
+    } else {
+      await setDoc(userRef, { cursos_vistos: [curso] });
+    }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      content.style.display = "block";
+      // Guardar automáticamente este curso en Firestore
+      await guardarCursoVistoUsuario(user.uid, "bovinos");
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Acceso restringido",
+        text: "Debes iniciar sesión para acceder a este contenido",
+        confirmButtonText: "Iniciar sesión",
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  });
+</script>
+
+<script>
+  // ===== Información detallada por módulo =====
+  const modulosDetalle = {
+    "modAlimentacion": `
+      <h2>Alimentación de Bovinos </h2>
+      <p>Una alimentación correcta es clave para maximizar la producción de carne y leche, mantener la salud del ganado y mejorar la eficiencia de los sistemas de producción.</p>
+      <h3>1. Forrajes</h3>
+      <p>Pastos frescos, heno y ensilajes de alta calidad son la base de la dieta. Se recomienda balancear proteína y fibra, y rotar pasturas para evitar sobrepastoreo.</p>
+      <h3>2. Suplementación</h3>
+      <p>Vitaminas, minerales y concentrados permiten cubrir necesidades nutricionales que los pastos no aportan. Evitar sobrealimentación para prevenir problemas digestivos.</p>
+      <h3>3. Agua y sal</h3>
+      <p>El acceso libre a agua limpia y sal mineralizada es esencial para la digestión y el bienestar general.</p>
+      <h3>4. Errores frecuentes</h3>
+      <ul>
+        <li>No variar la dieta según la edad o estado fisiológico.</li>
+        <li>Falta de balance entre forraje y concentrado.</li>
+        <li>No controlar calidad del agua y pasturas.</li>
+      </ul>
+    `,
+    "modSanidad": `
+      <h2>Sanidad Bovina </h2>
+      <p>La prevención es más económica y efectiva que tratar enfermedades.</p>
+      <h3>1. Vacunación</h3>
+      <p>Programas según región: brucelosis, aftosa, fiebre aftosa y clostridiales. Mantener registro actualizado.</p>
+      <h3>2. Desparasitación</h3>
+      <p>Programas internos y externos, ajustados según estación y carga parasitaria. Prevención de parásitos gastrointestinales y externos.</p>
+      <h3>3. Manejo de enfermedades</h3>
+      <p>Signos clínicos: diarrea, tos, fiebre, cojera. Aislar y tratar según protocolo veterinario. Registrar todos los casos para prevenir brotes.</p>
+      <h3>4. Bioseguridad</h3>
+      <ul>
+        <li>Limpieza diaria de instalaciones, corrales y bebederos.</li>
+        <li>Control de visitantes, transporte y equipos compartidos.</li>
+        <li>Eliminación segura de residuos y cadáveres para prevenir zoonosis.</li>
+      </ul>
+    `,
+    "modReproduccion": `
+      <h2>Reproducción y Parto </h2>
+      <p>El manejo reproductivo eficiente aumenta la productividad y reduce costos.</p>
+      <h3>1. Selección de reproductores</h3>
+      <p>Evaluar genética, salud y rendimiento productivo. Mantener registro de pedigrí y desempeño.</p>
+      <h3>2. Ciclo reproductivo</h3>
+      <p>Detección de celo, inseminación artificial y natural. Control de concepción y sincronización de celos.</p>
+      <h3>3. Manejo del parto</h3>
+      <p>Corrales limpios y supervisión de vacas primíparas. Asistencia si hay dificultades. Registro de nacimientos.</p>
+      <h3>4. Lactancia y crías</h3>
+      <p>Alimentación inicial adecuada, suministro de calostro y vacunación neonatal. Monitorizar crecimiento y salud.</p>
+    `,
+    "modBienestar": `
+      <h2>Bienestar y Manejo Ético </h2>
+      <p>El bienestar animal es clave para productividad y sostenibilidad.</p>
+      <h3>1. Instalaciones y espacio</h3>
+      <p>Corrales ventilados, camas confortables y espacio suficiente por animal.</p>
+      <h3>2. Manejo diario</h3>
+      <p>Movimientos suaves, alimentación regular y agua limpia. Evitar estrés físico y psicológico.</p>
+      <h3>3. Control de dolor y procedimientos</h3>
+      <p>Uso de anestesia y analgesia en procedimientos. Transporte y manejo cuidadoso.</p>
+      <h3>4. Enriquecimiento y socialización</h3>
+      <p>Permitir comportamientos naturales: pastoreo, interacción social y descanso adecuado.</p>
+    `
+  };
+
+  Object.keys(modulosDetalle).forEach(id => {
+    const mod = document.getElementById(id);
+    mod.addEventListener('click', () => {
+      Swal.fire({
+        title: 'Detalle del módulo',
+        html: modulosDetalle[id],
+        width: '800px',
+        showCloseButton: true,
+        focusConfirm: false,
+        confirmButtonText: 'Cerrar',
+        scrollbarPadding: false,
+        didOpen: () => {
+          document.querySelector('.swal2-html-container').style.textAlign = 'left';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

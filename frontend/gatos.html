@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gatos | JenEdu</title>
+  <link rel="stylesheet" href="gatos.css">
+
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+<!-- 🔒 CONTENIDO PROTEGIDO -->
+<div id="protectedContent" style="display:none;">
+
+  <header class="header">
+    <h1>Manejo integral del gato doméstico</h1>
+    <p>Guía completa de cuidado, salud y comportamiento felino</p>
+  </header>
+
+  <main class="content">
+
+    <section class="card">
+      <h2>Bienestar y cuidado diario</h2>
+      <p>
+        El bienestar del gato depende de un entorno seguro, limpio y estimulante.
+        Debe contar con agua fresca, un lugar tranquilo para descansar, caja de arena limpia
+        y enriquecimiento ambiental como rascadores y juegos.
+      </p>
+      <ul>
+        <li>Limpieza regular de arenero</li>
+        <li>Zona de descanso tranquila</li>
+        <li>Juegos diarios para evitar estrés</li>
+        <li>Protección contra frío y calor extremo</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Alimentación correcta</h2>
+      <p>
+        El gato es un carnívoro estricto. Su dieta debe ser rica en proteínas animales
+        y baja en carbohidratos. La alimentación incorrecta es causa común de enfermedades.
+      </p>
+      <ul>
+        <li>Alimento balanceado de calidad</li>
+        <li>Agua limpia disponible todo el día</li>
+        <li>Evitar comida humana (cebolla, ajo, chocolate)</li>
+        <li>Control de porciones para evitar obesidad</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Enfermedades comunes en gatos</h2>
+      <p>
+        Detectar enfermedades a tiempo puede salvar la vida del animal.
+        Estas son algunas de las más frecuentes:
+      </p>
+      <ul>
+        <li>Rinotraqueítis felina</li>
+        <li>Calicivirus</li>
+        <li>Panleucopenia</li>
+        <li>Enfermedades dentales</li>
+        <li>Problemas urinarios</li>
+      </ul>
+      <p class="warning">
+        ⚠️ Ante cualquier síntoma, consulta siempre con un veterinario.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Medicamentos y prevención</h2>
+      <p>
+        Los medicamentos deben ser indicados únicamente por un veterinario.
+        Nunca automediques a un gato, ya que muchos fármacos humanos son mortales para ellos.
+      </p>
+      <ul>
+        <li>Vacunación anual obligatoria</li>
+        <li>Desparasitación interna y externa</li>
+        <li>NO usar paracetamol ni ibuprofeno</li>
+        <li>Seguir siempre indicaciones profesionales</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Comportamiento felino</h2>
+      <p>
+        Los gatos se comunican mediante posturas, vocalizaciones y hábitos.
+        Comprender su comportamiento evita problemas de convivencia.
+      </p>
+      <ul>
+        <li>Maullidos excesivos → estrés o dolor</li>
+        <li>Arañar → comportamiento natural</li>
+        <li>Esconderse → miedo o enfermedad</li>
+        <li>Ronroneo → bienestar (o a veces dolor)</li>
+      </ul>
+    </section>
+
+    <section class="card alert">
+      <h2>Señales de alerta</h2>
+      <ul>
+        <li>No come o no bebe</li>
+        <li>Vómitos frecuentes</li>
+        <li>Letargo o aislamiento</li>
+        <li>Dificultad para orinar</li>
+      </ul>
+      <p>
+        Si detectas alguna de estas señales, acude inmediatamente al veterinario.
+      </p>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- 🔐 PROTECCIÓN DE ACCESO Y REGISTRO DE CURSO -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_uFXTPAOuMqY8cG4-nMHsokNAY4V9dYI",
+    authDomain: "mi-primer-proyecto-3762d.firebaseapp.com",
+    projectId: "mi-primer-proyecto-3762d",
+    storageBucket: "mi-primer-proyecto-3762d.firebasestorage.app",
+    messagingSenderId: "221249466153",
+    appId: "1:221249466153:web:2f987be3885a11c4c65138"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const content = document.getElementById("protectedContent");
+
+  // 🔹 Función para guardar curso visto en Firestore
+  async function guardarCursoVistoUsuario(userId, curso) {
+    const userRef = doc(db, "usuarios", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      // Solo agregar si no existe
+      await updateDoc(userRef, { cursos_vistos: arrayUnion(curso) });
+    } else {
+      await setDoc(userRef, { cursos_vistos: [curso] });
+    }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      content.style.display = "block";
+      // Guardar automáticamente este curso en Firestore
+      await guardarCursoVistoUsuario(user.uid, "Gatos");
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Acceso restringido",
+        text: "Debes iniciar sesión para acceder a este contenido",
+        confirmButtonText: "Iniciar sesión",
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

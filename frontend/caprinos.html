@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Caprinos | JenEdu</title>
+  <link rel="stylesheet" href="caprinos.css">
+
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+<!-- 🔒 CONTENIDO PROTEGIDO -->
+<div id="protectedContent" style="display:none;">
+
+  <header class="header">
+    <h1>Manejo integral de caprinos</h1>
+    <p>Guía completa de producción, salud y bienestar caprino</p>
+  </header>
+
+  <main class="content">
+
+    <section class="card">
+      <h2>Importancia de los caprinos</h2>
+      <p>
+        Los caprinos son animales altamente adaptables, ideales para producción
+        de carne, leche y subproductos en zonas áridas y semiáridas.
+        Son fundamentales para pequeños y medianos productores.
+      </p>
+      <ul>
+        <li>Producción de leche y quesos</li>
+        <li>Producción de carne</li>
+        <li>Adaptación a climas difíciles</li>
+        <li>Bajo costo de mantenimiento</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Instalaciones y manejo</h2>
+      <p>
+        Un buen manejo comienza con instalaciones adecuadas que protejan
+        al animal del clima y enfermedades.
+      </p>
+      <ul>
+        <li>Corrales secos y ventilados</li>
+        <li>Protección contra lluvia y humedad</li>
+        <li>Limpieza frecuente</li>
+        <li>Separación por edad y sexo</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Alimentación caprina</h2>
+      <p>
+        La alimentación es el factor más importante en la productividad.
+        El caprino es ramoneador y aprovecha arbustos, pastos y forrajes.
+      </p>
+      <ul>
+        <li>Pastoreo controlado</li>
+        <li>Suplementación en sequía</li>
+        <li>Sales minerales obligatorias</li>
+        <li>Agua limpia permanente</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Enfermedades comunes</h2>
+      <p>
+        La prevención sanitaria evita grandes pérdidas económicas.
+        Estas son las enfermedades más frecuentes:
+      </p>
+      <ul>
+        <li>Parasitosis internas</li>
+        <li>Clostridiosis</li>
+        <li>Neumonías</li>
+        <li>Mastitis</li>
+        <li>Fiebre aftosa (según región)</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Medicación y prevención</h2>
+      <p>
+        El uso correcto de medicamentos debe estar guiado por un veterinario
+        o técnico pecuario.
+      </p>
+      <ul>
+        <li>Plan sanitario anual</li>
+        <li>Desparasitación estratégica</li>
+        <li>Uso responsable de antibióticos</li>
+        <li>No automedicar</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Reproducción caprina</h2>
+      <p>
+        Un buen manejo reproductivo aumenta la rentabilidad del sistema.
+      </p>
+      <ul>
+        <li>Control de montas</li>
+        <li>Selección genética</li>
+        <li>Detección de celo</li>
+        <li>Manejo de crías recién nacidas</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Comportamiento y bienestar</h2>
+      <p>
+        Los caprinos son animales sociales e inteligentes.
+        El estrés reduce producción y aumenta enfermedades.
+      </p>
+      <ul>
+        <li>Mantenerlos en grupo</li>
+        <li>Evitar hacinamiento</li>
+        <li>Evitar gritos y golpes</li>
+        <li>Manejo tranquilo</li>
+      </ul>
+    </section>
+
+    <section class="card alert">
+      <h2>Señales de alerta</h2>
+      <ul>
+        <li>❌ Pérdida de apetito</li>
+        <li>❌ Diarreas</li>
+        <li>❌ Cojeras</li>
+        <li>❌ Secreciones nasales</li>
+        <li>❌ Baja producción de leche</li>
+      </ul>
+      <p>
+        Ante cualquier signo anormal, consulta con un profesional.
+      </p>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- 🔐 PROTECCIÓN DE ACCESO Y GUARDADO DE CURSO -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_uFXTPAOuMqY8cG4-nMHsokNAY4V9dYI",
+    authDomain: "mi-primer-proyecto-3762d.firebaseapp.com",
+    projectId: "mi-primer-proyecto-3762d",
+    storageBucket: "mi-primer-proyecto-3762d.firebasestorage.app",
+    messagingSenderId: "221249466153",
+    appId: "1:221249466153:web:2f987be3885a11c4c65138"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const content = document.getElementById("protectedContent");
+
+  // 🔹 Función para guardar el curso en Firestore
+  async function guardarCursoVistoUsuario(userId, curso) {
+    const userRef = doc(db, "usuarios", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      await updateDoc(userRef, { cursos_vistos: arrayUnion(curso) });
+    } else {
+      await setDoc(userRef, { cursos_vistos: [curso] });
+    }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      content.style.display = "block";
+      await guardarCursoVistoUsuario(user.uid, "Caprinos");
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Acceso restringido",
+        text: "Debes iniciar sesión para acceder a este contenido",
+        confirmButtonText: "Iniciar sesión",
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

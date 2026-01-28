@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro | Plataforma Educativa Animal</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<body>
+<div class="login-container">
+  <h1>🐾 Crear cuenta</h1>
+  <p>Regístrate para acceder a la Plataforma Educativa Animal</p>
+
+  <input type="text" id="nombre" placeholder="Nombre">
+  <input type="text" id="apellido" placeholder="Apellido">
+  <input type="email" id="email" placeholder="Correo electrónico">
+  <input type="password" id="password" placeholder="Contraseña">
+
+  <button onclick="register()">Crear cuenta</button>
+
+  <p class="small">
+    ¿Ya tienes cuenta?
+    <span onclick="window.location.href='login.html'">Inicia sesión</span>
+  </p>
+</div>
+
+<script type="module" src="register.js"></script>
+</body>
+</html>

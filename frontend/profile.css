@@ -1,0 +1,252 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: #f4f6f8;
+  color: #333;
+}
+
+/* Barra superior */
+.topbar {
+  height: 70px;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.back-btn {
+  font-weight: 600;
+  color: #2e7d32;
+  text-decoration: none;
+}
+
+/* Contenedor */
+.profile-container {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tarjeta */
+.profile-card {
+  background: #fff;
+  width: 380px;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Avatar */
+.avatar {
+  width: 90px;
+  height: 90px;
+  background: #2e7d32;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 auto 20px;
+}
+
+/* Info */
+.role {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.info-box {
+  background: #f4f6f8;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.info-box strong {
+  display: block;
+  font-size: 16px;
+  margin-top: 5px;
+  color: #2e7d32;
+}
+
+/* Botón */
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #c62828;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.logout-btn:hover {
+  background: #b71c1c;
+}
+
+
+
+.courses-viewed {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.courses-viewed h3 {
+  margin-bottom: 10px;
+  color: #2e7d32;
+}
+
+.courses-viewed ul {
+  list-style: none;
+  padding: 0;
+}
+
+.courses-viewed li {
+  background: #f4f6f8;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+
+
+#resendBtn {
+  background: linear-gradient(90deg, #1c8a00, #1c8a00); /* degradado azul profesional */
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 15px 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* espacio entre ícono y texto */
+}
+
+#resendBtn:hover {
+  background: linear-gradient(90deg, #6366f1, #4f46e5);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+#resendBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+
+
+.premium-help {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f6fffb;
+  border: 1px solid #ccefe3;
+  border-radius: 14px;
+}
+
+.premium-help h3 {
+  margin-bottom: 10px;
+  color: #15803d;
+}
+
+.premium-desc {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+.premium-help textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.btn-premium {
+  margin-top: 10px;
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-premium:hover {
+  background: #16a34a;
+}
+
+#listaConsultas {
+  margin-top: 10px;
+  list-style: none;
+  padding: 0;
+}
+
+#listaConsultas li {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+
+/* Estilo botón Borrar consulta */
+.btn-borrar {
+  background-color: #424242; /* rojo intenso */
+  color: #fff;               /* texto blanco */
+  border: none;
+  padding: 8px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-borrar:hover {
+  background-color: #c0392b; /* rojo más oscuro */
+  transform: translateY(-2px);
+}
+
+.btn-borrar:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}

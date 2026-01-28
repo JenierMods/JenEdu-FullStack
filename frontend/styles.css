@@ -1,0 +1,202 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; color:#333; background-color:#f4f6f8; }
+a { text-decoration:none; color:inherit; }
+
+.topbar {
+  width:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  height:70px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 40px;
+  background:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  z-index:1000;
+}
+
+.logo { font-size:1.5rem; font-weight:700; color:#2e7d32; }
+
+.btn-primary {
+  padding:10px 22px;
+  border-radius:25px;
+  background:#2e7d32;
+  color:#fff;
+  font-weight:600;
+  transition:.3s;
+}
+.btn-primary:hover { background:#1b5e20; }
+
+.hero {
+  padding:150px 20px 80px;
+  background:linear-gradient(135deg,#d0f0c0 0%,#56ab2f 100%);
+  color:#fff;
+  text-align:center;
+  clip-path:polygon(0 0,100% 0,100% 85%,0 100%);
+}
+
+.hero h1 { font-size:2.8rem; margin-bottom:20px; }
+.hero p { font-size:1.2rem; max-width:700px; margin:auto; }
+
+.section { padding:80px 20px; max-width:1200px; margin:auto; }
+.section h2 { text-align:center; margin-bottom:40px; color:#2e7d32; }
+.center { text-align:center; max-width:800px; margin:auto; }
+
+.features, .species-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:25px;
+}
+
+.feature, .species {
+  background:#fff;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
+  text-align:center;
+  transition:.3s;
+  cursor:pointer;
+}
+.feature:hover, .species:hover {
+  transform:translateY(-5px);
+}
+
+.species span { display:block; margin-top:10px; font-weight:600; }
+.free { border-top:4px solid #2e7d32; }
+.premium { border-top:4px solid #c62828; }
+
+.hero.end {
+  background:#2e7d32;
+  padding:80px 20px;
+  text-align:center;
+  color:#fff;
+}
+
+.user-menu {
+  position:fixed;
+  top:15px;
+  right:40px;
+  z-index:2000;
+  display:none;
+}
+
+.avatar {
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:#2e7d32;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.dropdown {
+  position:absolute;
+  top:60px;
+  right:0;
+  background:#fff;
+  width:230px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+  display:none;
+  padding:15px;
+}
+
+.dropdown a {
+  display:block;
+  padding:10px;
+  border-radius:8px;
+  font-weight:600;
+  margin-bottom:10px;
+  background:#f4f6f8;
+}
+
+footer {
+  background:#1b5e20;
+  color:#fff;
+  padding:60px 20px;
+}
+
+footer .footer-grid {
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:40px;
+}
+
+footer h4 { color:#c8e6c9; margin-bottom:15px; }
+.footer-copy { text-align:center; margin-top:40px; color:#c8e6c9; }
+
+
+
+
+/* Efecto general para las redes sociales */
+.social-links .social {
+  display: inline-block;
+  position: relative;
+  transition: all 0.3s ease;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Animación al pasar el mouse */
+.social-links .social:hover {
+  color: #2ecc71;          /* Cambia de color */
+  transform: translateY(-5px) scale(1.1); /* Sube un poco y se agranda */
+  text-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra sutil */
+}
+
+/* Opcional: efecto de subrayado animado */
+.social-links .social::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #2ecc71;
+  transition: width 0.3s;
+}
+
+.social-links .social:hover::after {
+  width: 100%;
+}
+
+
+
+.verify-warning {
+  position: fixed;
+  top: 70px; /* 👈 BAJO LA BARRA BLANCA */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 500px;
+  background: #fff3cd;
+  color: #856404;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid #ffeeba;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+
+
+.verify-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 15px 20px;
+  margin: 15px auto;
+  border-radius: 8px;
+  max-width: 600px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}

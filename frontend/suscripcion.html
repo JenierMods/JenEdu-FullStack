@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Suscripción Premium | JenEdu</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- PayPal SDK (SANDBOX) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AcPt9wdkNO6f-jNaurDUaRP6sj_uXmVM9aAsKrqqBOKRX-AJKoU3Y75LioYbr3Od_4h5ufGQRu8b6N_t&currency=USD"></script>
+
+  <style>
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f4f8f6;
+    color: #1f2937;
+    min-height: 100vh;
+  }
+
+  .wrapper {
+    max-width: 1100px;
+    margin: auto;
+    padding: 60px 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .header h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #166534;
+  }
+
+  .header p {
+    max-width: 700px;
+    margin: 15px auto 0;
+    font-size: 16px;
+    color: #4b5563;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .info {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+
+  .info h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #14532d;
+  }
+
+  .info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .info li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 15px;
+  }
+
+  .info li span {
+    color: #22c55e;
+    font-weight: bold;
+  }
+
+  .cta {
+    background: #ecfdf5;
+    border: 2px solid #97ffbf;
+    padding: 40px 30px;
+    border-radius: 18px;
+    text-align: center;
+  }
+
+  .price {
+    font-size: 40px;
+    font-weight: 800;
+    color: #15803d;
+  }
+
+  .price small {
+    font-size: 14px;
+    font-weight: 400;
+    color: #4b5563;
+  }
+
+  .daily {
+    margin: 15px 0 25px;
+    font-size: 14px;
+    color: #166534;
+  }
+
+  .trust {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .back {
+    display: inline-block;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #166534;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .back:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="wrapper">
+
+  <div class="header">
+    <h1>Hazte Premium en JenEdu</h1>
+    <p>
+      Aprende a manejar, cuidar y producir con animales de forma correcta,
+      práctica y profesional. JenEdu Premium te da acceso completo
+      a los contenidos que marcan la diferencia en el campo.
+    </p>
+  </div>
+
+  <div class="grid">
+
+    <!-- INFO -->
+    <div class="info">
+      <h2>¿Qué obtienes con Premium?</h2>
+
+      <ul>
+        <li><span>✔</span> Acceso completo a todos los cursos premium</li>
+        <li><span>✔</span> Contenido práctico y profesional</li>
+        <li><span>✔</span> Ideal para productores, estudiantes y técnicos</li>
+        <li><span>✔</span> Aprende a evitar errores comunes y pérdidas</li>
+        <li><span>✔</span> Mejora la salud, bienestar y productividad animal</li>
+        <li><span>✔</span> Acceso a asesoría y acompañamiento por profesionales</li>
+        <li><span>✔</span> Comunicación directa con el equipo de JenEdu para resolver dudas</li>
+      </ul>
+
+      <p style="margin-top:20px; font-size:14px; color:#4b5563;">
+        JenEdu no es teoría vacía. Aquí aprendes lo que realmente funciona
+        en la práctica diaria.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <h2>Acceso Premium</h2>
+
+      <div class="price">
+        $20 <small>USD / mes</small>
+      </div>
+
+      <div class="daily">
+        💡 Menos de $0.70 al día para mejorar tu producción
+      </div>
+
+      <div id="paypal-button-container"></div>
+
+      <div class="trust">
+        🔒 Pago seguro procesado por PayPal<br>
+        Cancela cuando quieras
+      </div>
+
+      <a href="index.html" class="back">← Volver al inicio</a>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_uFXTPAOuMqY8cG4-nMHsokNAY4V9dYI",
+    authDomain: "mi-primer-proyecto-3762d.firebaseapp.com",
+    projectId: "mi-primer-proyecto-3762d",
+    storageBucket: "mi-primer-proyecto-3762d.firebasestorage.app",
+    messagingSenderId: "221249466153",
+    appId: "1:221249466153:web:2f987be3885a11c4c65138"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  let currentUser = null;
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      Swal.fire("Debes iniciar sesión").then(() => {
+        window.location.href = "login.html";
+      });
+    } else {
+      currentUser = user;
+      cargarPayPal();
+    }
+  });
+
+  function cargarPayPal() {
+    paypal.Buttons({
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: "20.00"
+            }
+          }]
+        });
+      },
+
+      onApprove: async (data, actions) => {
+        await actions.order.capture();
+
+        // 🔥 ACTIVAR SUSCRIPCIÓN EN FIREBASE
+        const response = await fetch("http://192.168.1.18:3000/activar-suscripcion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            uid: currentUser.uid,
+            orderID: data.orderID
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "¡Suscripción activada!",
+            text: "Ahora tienes acceso premium 🎉"
+          }).then(() => {
+            window.location.href = "profile.html";
+          });
+        } else {
+          Swal.fire("Error", "No se pudo activar la suscripción", "error");
+        }
+      },
+
+      onError: (err) => {
+        console.error(err);
+        Swal.fire("Error", "Ocurrió un problema con PayPal", "error");
+      }
+    }).render('#paypal-button-container');
+  }
+</script>
+
+</body>
+</html>
